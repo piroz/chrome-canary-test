@@ -73,6 +73,16 @@
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
+  // --- Text-to-speech ---
+
+  function speakText(text) {
+    if (!window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ja-JP";
+    speechSynthesis.speak(utterance);
+  }
+
   // --- Textarea auto-resize ---
 
   messageInput.addEventListener("input", () => {
@@ -108,6 +118,8 @@
         bubble.textContent = fullText;
         scrollToBottom();
       }
+
+      speakText(fullText);
     } catch (err) {
       removeTypingIndicator();
       console.error("Prompt error:", err);
