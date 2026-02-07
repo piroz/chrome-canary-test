@@ -99,9 +99,11 @@
       const stream = await session.promptStreaming(text);
       removeTypingIndicator();
       const bubble = addMessage("ai", "");
+      let fullText = "";
 
       for await (const chunk of stream) {
-        bubble.textContent = chunk;
+        fullText += chunk;
+        bubble.textContent = fullText;
         scrollToBottom();
       }
     } catch (err) {

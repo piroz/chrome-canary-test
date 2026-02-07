@@ -28,12 +28,12 @@ Three files, no framework, no modules:
 - **`style.css`** — Dark theme, message bubbles (user right/blue, AI left/grey), fixed bottom input, typing indicator animation
 - **`app.js`** — Single IIFE containing all logic:
   - **Init flow**: detects API via global `LanguageModel` (current) with fallback to `self.ai.languageModel` (legacy) → checks availability → creates session with system prompt → enables input
-  - **Streaming**: uses `session.promptStreaming()` which yields cumulative text chunks (each chunk replaces the full bubble content, not appended)
+  - **Streaming**: uses `session.promptStreaming()` which yields delta text chunks (each chunk is new text, accumulated into `fullText` and assigned to the bubble)
   - **UI**: Enter sends, Shift+Enter for newline, auto-scroll, textarea auto-resize, typing indicator during generation
 
 ## Key API Details
 
-- The Prompt API's `promptStreaming()` returns chunks that are **cumulative** (the full response so far), not deltas. The bubble's `textContent` is replaced on each chunk, not appended.
+- The Prompt API's `promptStreaming()` returns **delta** chunks (new text only, not the full response so far). Chunks must be accumulated manually.
 - The API path changed from `self.ai.languageModel` to the global `LanguageModel` object. The code supports both with a fallback chain.
 - Desktop only (Windows/macOS/Linux). Android Chrome Canary is not supported.
 - Model download requires ~10GB free disk space.
