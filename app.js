@@ -4,6 +4,7 @@
   const chatMessages = document.getElementById("chat-messages");
   const messageInput = document.getElementById("message-input");
   const sendButton = document.getElementById("send-button");
+  const voiceButton = document.getElementById("voice-button");
 
   let session = null;
   let isGenerating = false;
@@ -88,6 +89,7 @@
     isGenerating = true;
     sendButton.disabled = true;
     messageInput.disabled = true;
+    voiceButton.disabled = true;
 
     addMessage("user", text);
     messageInput.value = "";
@@ -119,6 +121,7 @@
       isGenerating = false;
       sendButton.disabled = false;
       messageInput.disabled = false;
+      voiceButton.disabled = false;
       messageInput.focus();
     }
   }
@@ -133,6 +136,53 @@
       sendMessage();
     }
   });
+
+  // --- Voice input ---
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "ja-JP";
+
+    let isListening = false;
+    let textBeforeVoice = "";
+
+    voiceButton.addEventListener("click", () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        textBeforeVoice = messageInput.value;
+        recognition.start();
+        isListening = true;
+        voiceButton.classList.add("listening");
+      }
+    });
+
+    recognition.onresult = (event) => {
+      let transcript = "";
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+      messageInput.value = textBeforeVoice + transcript;
+      messageInput.dispatchEvent(new Event("input"));
+    };
+
+    recognition.onend = () => {
+      isListening = false;
+      voiceButton.classList.remove("listening");
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      isListening = false;
+      voiceButton.classList.remove("listening");
+    };
+  } else {
+    voiceButton.style.display = "none";
+  }
 
   // --- Initialization ---
 
@@ -193,6 +243,7 @@
     setStatus("Ready", "ready");
     messageInput.disabled = false;
     sendButton.disabled = false;
+    voiceButton.disabled = false;
     messageInput.focus();
   }
 
