@@ -14,6 +14,12 @@ No build step. Serve the project root with any static server:
 npx serve .
 ```
 
+or:
+
+```
+python3 -m http.server 8000
+```
+
 Then open in Chrome Canary with these flags enabled:
 - `chrome://flags/#prompt-api-for-gemini-nano` → Enabled
 - `chrome://flags/#optimization-guide-on-device-model` → Enabled BypassPerfRequirement
@@ -24,12 +30,13 @@ No tests or linter configured.
 
 Three files, no framework, no modules:
 
-- **`index.html`** — Shell: chat message area, textarea + send button, setup guide (hidden by default)
-- **`style.css`** — Dark theme, message bubbles (user right/blue, AI left/grey), fixed bottom input, typing indicator animation
+- **`index.html`** — Shell: chat message area, textarea + voice/send buttons, setup guide (hidden by default)
+- **`style.css`** — Dark theme, message bubbles (user right/blue, AI left/grey), fixed bottom input, typing indicator animation, voice button pulse animation
 - **`app.js`** — Single IIFE containing all logic:
   - **Init flow**: detects API via global `LanguageModel` (current) with fallback to `self.ai.languageModel` (legacy) → checks availability → creates session with system prompt → enables input
   - **Streaming**: uses `session.promptStreaming()` which yields delta text chunks (each chunk is new text, accumulated into `fullText` and assigned to the bubble)
   - **UI**: Enter sends, Shift+Enter for newline, auto-scroll, textarea auto-resize, typing indicator during generation
+  - **Voice input**: Web Speech API (`webkitSpeechRecognition`) for speech-to-text into the textarea. Hidden automatically on unsupported browsers. Disabled during AI generation.
 
 ## Key API Details
 
