@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Nano Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="chat-container">
+    <header class="chat-header">
+      <h1>Gemini Nano Chat</h1>
+      <div id="status" class="status">確認中...</div>
+    </header>
+
+    <div id="setup-guide" class="setup-guide hidden">
+      <h2>Chrome Canary セットアップ</h2>
+      <p>Gemini Nano を使用するには、以下の設定が必要です：</p>
+      <ol>
+        <li><code>chrome://flags/#optimization-guide-on-device-model</code> を <strong>Enabled BypassPerfRequirement</strong> に変更</li>
+        <li><code>chrome://flags/#prompt-api-for-gemini-nano</code> を <strong>Enabled</strong> に変更</li>
+        <li>Chrome を再起動（Relaunch）</li>
+        <li>DevTools コンソールで <code>await LanguageModel.availability()</code> を実行し <code>"available"</code> を確認</li>
+        <li><code>"downloadable"</code> の場合は <code>await LanguageModel.create()</code> を実行してモデルをダウンロード</li>
+      </ol>
+      <p class="setup-note">※ モデルのダウンロードにディスク空き容量が最低10GB程度必要です。</p>
+    </div>
+
+    <main id="chat-messages" class="chat-messages"></main>
+
+    <footer class="chat-input">
+      <textarea
+        id="message-input"
+        placeholder="メッセージを入力... (Enter で送信、Shift+Enter で改行)"
+        rows="1"
+        disabled
+      ></textarea>
+      <button id="send-button" disabled>送信</button>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
